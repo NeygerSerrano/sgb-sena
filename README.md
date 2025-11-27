@@ -46,12 +46,35 @@ npm install
 # Ejecuta el archivo database_schema.sql en tu PostgreSQL
 ```
 
-5. Inicia el servidor de desarrollo:
+5. Crea los usuarios de prueba:
+```bash
+npm run create-users
+```
+
+6. Inicia el servidor de desarrollo:
 ```bash
 npm run dev
 ```
 
-6. Abre [http://localhost:3000](http://localhost:3000) en tu navegador
+7. Abre [http://localhost:3000](http://localhost:3000) en tu navegador
+
+## 🔐 Credenciales de Prueba
+
+Ver archivo `CREDENCIALES.md` para las credenciales de todos los usuarios de prueba.
+
+**Ejemplo:**
+- Email: `admin@sena.edu.co`
+- Password: `admin123`
+
+### ⚠️ Problema de "Credenciales Incorrectas"
+
+Si al iniciar sesión recibes el error "credenciales incorrectas", ejecuta:
+
+```bash
+npm run fix-passwords
+```
+
+Este comando regenera las contraseñas de todos los usuarios con hashes bcrypt correctos.
 
 ## 👥 Roles del Sistema
 

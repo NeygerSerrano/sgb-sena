@@ -40,7 +40,11 @@ async function testLogin() {
 
         // 3. Verificar usuarios en la base
         console.log('3️⃣ Verificando usuarios en la base...');
-        const users = await pool.query('SELECT id, nombre, email, rol, LENGTH(password) as pwd_len FROM usuarios');
+        const users = await pool.query(`
+            SELECT u.id, u.nombre, u.email, r.nombre as rol, LENGTH(u.password) as pwd_len 
+            FROM usuarios u
+            LEFT JOIN roles r ON u.rol_principal_id = r.id
+        `);
 
         if (users.rows.length === 0) {
             console.log('❌ No hay usuarios en la base de datos');
@@ -50,7 +54,7 @@ async function testLogin() {
 
         console.log(`✅ Se encontraron ${users.rows.length} usuario(s):`);
         users.rows.forEach(u => {
-            console.log(`   - ${u.email} (${u.rol}) - Password hash length: ${u.pwd_len}`);
+            console.log(`   - ${u.email} (${u.rol || 'sin rol'}) - Password hash length: ${u.pwd_len}`);
         });
         console.log('');
 
@@ -82,14 +86,14 @@ async function testLogin() {
                 console.log('❌ CONTRASEÑA INCORRECTA');
                 console.log('\n🔧 SOLUCIÓN:');
                 console.log('El hash de la contraseña en la base no coincide.');
-                console.log('Ejecuta: npm run create-users');
-                console.log('Esto recreará los usuarios con las contraseñas correctas.');
+                console.log('Ejecuta: npm run fix-passwords');
+                console.log('Esto regenerará las contraseñas correctamente.');
             }
         } catch (bcryptError) {
             console.log('❌ Error al verificar contraseña:', bcryptError.message);
             console.log('\n🔧 POSIBLE CAUSA:');
             console.log('El valor en la columna password no es un hash válido de bcrypt');
-            console.log('Ejecuta: npm run create-users');
+            console.log('Ejecuta: npm run fix-passwords');
         }
 
     } catch (error) {
